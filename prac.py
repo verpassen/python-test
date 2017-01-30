@@ -75,27 +75,5 @@ root=tk.Tk()
 root.title('Test')
 gui=Application(master = root)
 root.mainloop()
-'''
-def call_back():
-	user = e.get()
-	print user
 
-def close_window():
-	#if tkMessageBox.askokcancel('Quit','You want to quit now? *sniff*'):
-	global root
-	root.destory() 
-
-root=tk.Tk()
-txt1 = tk.Label(text='User Name')
-txt1.pack()
-user = StringVar()
-user.set('')
-e=tk.Entry()
-e.pack()
-btn1=tk.Button(text='Check',command=call_back)
-btn1.pack()
-btn2=tk.Button(text='Close',command=close_window)
-btn2.pack()
-root.mainloop()
-'''
 
