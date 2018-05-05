@@ -1,0 +1,29 @@
+import numpy as np
+from scipy import pi,sin,cos
+import matplotlib.pyplot as plt
+
+n = 360
+the = np.linspace(0,2*pi,n)
+L = 112.
+Y_u = 78.
+X,Y=[],[]
+
+Sx = np.concatenate((Y_u*np.ones(n/4),np.linspace(Y_u,-Y_u,n/4),-Y_u*np.ones(n/4),np.linspace(-Y_u,Y_u,n/4)))
+Sy = np.concatenate((np.linspace(-Y_u,Y_u,n/4),Y_u*np.ones(n/4),np.linspace(Y_u,-Y_u,n/4),-Y_u*np.ones(n/4)))
+for i in range(len(the)):
+    P1=np.array([0,-L,1])
+    M12=np.matrix([[cos(the[i]),sin(the[i]),Sx[i]*cos(the[i])+Sy[i]*sin(the[i])],\
+        [-sin(the[i]),cos(the[i]),Sy[i]*cos(the[i])-Sx[i]*sin(the[i])],[0,0,1]])
+    M23 = np.matrix([[cos(the[i]),sin(the[i]),0],[-sin(the[i]),cos(the[i]),0],[0,0,1]])
+    temp = np.dot(M12,P1)
+    P2 = np.dot(M23,np.transpose(temp))
+    X.append(P2[0,0])
+    Y.append(P2[1,0])
+
+#-----------
+plt.figure(1)
+plt.axis('equal')
+plt.plot(X,Y)
+plt.plot(Sx,Sy)
+plt.grid()
+plt.show()
