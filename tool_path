@@ -7,12 +7,14 @@ n = 360
 the = np.linspace(0,2*pi,n)
 L = 112.  # tool length
 U_B = 87. # boundary distance
+L_d = 80.  # diameter of the hole
 #dR = np.linspace(20,70)
 dR = 30
 Rsx, Rsy = U_B-dR ,U_B-dR
 
 Upper_Ang = arctan(U_B/(U_B-dR))
 Lower_Ang = arctan((U_B-dR)/U_B)
+Dx,Dy,Lx,Ly = [],[],[],[]
 X,Y,Sx,Sy=[],[],[],[] 
 S = []
  
@@ -20,44 +22,71 @@ S = []
 for k in range(len(the)):
 	A = (cos(the[k]))**(-2)
 	C = Rsx**2 + Rsy**2 - dR**2
-	if the[k] < pi/2:
+	if the[k] <= pi/2:
 		B = -2*(Rsx+Rsy*tan(the[k]))
-	elif the[k] < pi:
+	elif pi/2 < the[k] <= pi:
 		B = -2*(-Rsx+Rsy*tan(the[k]))
-	elif the[k] < 3*pi/2:
+	elif pi < the[k] <= 3*pi/2:
 		B = 2*(Rsx+Rsy*tan(the[k]))
 	else:
 		B = -2*(Rsx-Rsy*tan(the[k]))
-	
-		
-	if the[k] < Lower_Ang:
+			
+	if the[k] < Lower_Ang or the[k] > 2*pi-Lower_Ang:
 		Sx.append(U_B) 
 		Sy.append(tan(the[k])*Sx[k])
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
 	elif Lower_Ang < the[k] < Upper_Ang:
 		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
 		Sy.append(tan(the[k])*Sx[k])
-	elif the[k] < (Upper_Ang+pi/2):
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	elif Upper_Ang < the[k] < (Lower_Ang+pi/2):
 		Sy.append(U_B)
 		Sx.append(Sy[k]/tan(the[k]))
-	elif the[k] < (Lower_Ang+pi/2):
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	elif (Lower_Ang+pi/2) < the[k] < (Upper_Ang + pi/2):
+		Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
+		Sy.append(tan(the[k])*Sx[k])
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	elif (Upper_Ang + pi/2) < the[k] < (Lower_Ang + pi):
+		Sx.append(-1*U_B)
+		Sy.append(tan(the[k])*Sx[k])
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	elif (Lower_Ang + pi)< the[k] < (Upper_Ang + pi):
+		Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
+		Sy.append(tan(the[k])*Sx[k])
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	elif the[k] < (2*pi-Upper_Ang):
+		Sy.append(-1*U_B)
+		Sx.append(Sy[k]/tan(the[k]))
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	else:
 		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
 		Sy.append(tan(the[k])*Sx[k])
-	elif the[k] < (Upper_Ang + pi):
+		S.append(sqrt(Sx[k]**2+Sy[k]**2))
 		
-	
-	S.append(sqrt(Sx[k]**2+Sy[k]**2))
+	#S.append(sqrt(Sx[k]**2+Sy[k]**2))
 
+	Dx.append(np.array(U_B*cos(the[k])))
+	Dy.append(np.array(U_B*sin(the[k])))
+	Lx.append(np.array(L_d*cos(the[k])/2))
+	Ly.append(np.array(L_d*sin(the[k])/2))
+	
 for i in range(len(the)):
 	P1=np.array([-L,0,1])
-	M12=np.matrix([[cos(the[i]),-sin(the[i]),S[i]*cos(the[i])],[-sin(the[i]),cos(the[i]),S[i]*sin(the[i])],[0,0,1]])
+	M12=np.matrix([[cos(the[i]),-sin(the[i]),S[i]*cos(the[i])],[sin(the[i]),cos(the[i]),S[i]*sin(the[i])],[0,0,1]])
 	P2 = np.dot(M12,P1)
 	X.append(P2[0,0])
 	Y.append(P2[0,1])
 
+	
 #-----------
+plt.figure(2)
+plt.plot(the,Sy)
+plt.grid()
 plt.figure(1)
 plt.axis('equal')
 plt.plot(X,Y)
-plt.plot(Sx,Sy)
+plt.plot(Sx,Sy,'g')
+plt.plot(Dx,Dy,'r',Lx,Ly,'g--')
 plt.grid()
 plt.show()
