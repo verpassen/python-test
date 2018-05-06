@@ -1,24 +1,58 @@
 import numpy as np
-from scipy import pi,sin,cos
+from scipy import pi,sin,cos,tan,arctan
+from math import sqrt
 import matplotlib.pyplot as plt
-
+ 
 n = 360
 the = np.linspace(0,2*pi,n)
-L = 112.
-Y_u = 78.
-X,Y=[],[]
+L = 112.  # tool length
+U_B = 87. # boundary distance
+#dR = np.linspace(20,70)
+dR = 30
+Rsx, Rsy = U_B-dR ,U_B-dR
 
-Sx = np.concatenate((Y_u*np.ones(n/4),np.linspace(Y_u,-Y_u,n/4),-Y_u*np.ones(n/4),np.linspace(-Y_u,Y_u,n/4)))
-Sy = np.concatenate((np.linspace(-Y_u,Y_u,n/4),Y_u*np.ones(n/4),np.linspace(Y_u,-Y_u,n/4),-Y_u*np.ones(n/4)))
+Upper_Ang = arctan(U_B/(U_B-dR))
+Lower_Ang = arctan((U_B-dR)/U_B)
+X,Y,Sx,Sy=[],[],[],[] 
+S = []
+ 
+
+for k in range(len(the)):
+	A = (cos(the[k]))**(-2)
+	C = Rsx**2 + Rsy**2 - dR**2
+	if the[k] < pi/2:
+		B = -2*(Rsx+Rsy*tan(the[k]))
+	elif the[k] < pi:
+		B = -2*(-Rsx+Rsy*tan(the[k]))
+	elif the[k] < 3*pi/2:
+		B = 2*(Rsx+Rsy*tan(the[k]))
+	else:
+		B = -2*(Rsx-Rsy*tan(the[k]))
+	
+		
+	if the[k] < Lower_Ang:
+		Sx.append(U_B) 
+		Sy.append(tan(the[k])*Sx[k])
+	elif Lower_Ang < the[k] < Upper_Ang:
+		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
+		Sy.append(tan(the[k])*Sx[k])
+	elif the[k] < (Upper_Ang+pi/2):
+		Sy.append(U_B)
+		Sx.append(Sy[k]/tan(the[k]))
+	elif the[k] < (Lower_Ang+pi/2):
+		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
+		Sy.append(tan(the[k])*Sx[k])
+	elif the[k] < (Upper_Ang + pi):
+		
+	
+	S.append(sqrt(Sx[k]**2+Sy[k]**2))
+
 for i in range(len(the)):
-    P1=np.array([0,-L,1])
-    M12=np.matrix([[cos(the[i]),sin(the[i]),Sx[i]*cos(the[i])+Sy[i]*sin(the[i])],\
-        [-sin(the[i]),cos(the[i]),Sy[i]*cos(the[i])-Sx[i]*sin(the[i])],[0,0,1]])
-    M23 = np.matrix([[cos(the[i]),sin(the[i]),0],[-sin(the[i]),cos(the[i]),0],[0,0,1]])
-    temp = np.dot(M12,P1)
-    P2 = np.dot(M23,np.transpose(temp))
-    X.append(P2[0,0])
-    Y.append(P2[1,0])
+	P1=np.array([-L,0,1])
+	M12=np.matrix([[cos(the[i]),-sin(the[i]),S[i]*cos(the[i])],[-sin(the[i]),cos(the[i]),S[i]*sin(the[i])],[0,0,1]])
+	P2 = np.dot(M12,P1)
+	X.append(P2[0,0])
+	Y.append(P2[0,1])
 
 #-----------
 plt.figure(1)
