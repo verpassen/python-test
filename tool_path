@@ -8,85 +8,90 @@ the = np.linspace(0,2*pi,n)
 L = 112.  # tool length
 U_B = 87. # boundary distance
 L_d = 80.  # diameter of the hole
-#dR = np.linspace(20,70)
-dR = 30
-Rsx, Rsy = U_B-dR ,U_B-dR
+#dR = np.linspace(20,70,5)
+dR = [20,30,40,50,60,70]
+Dx,Dy,Lx,Ly,X,Y,Sx,Sy,S = [],[],[],[],[],[],[],[],[] 
+P_x,P_y,L_s = [[] for i in range(len(dR))],[[] for i in range(len(dR))], [[] for i in range(len(dR))]
+P_sx,P_sy = [[] for i in range(len(dR))],[[] for i in range(len(dR))]
 
-Upper_Ang = arctan(U_B/(U_B-dR))
-Lower_Ang = arctan((U_B-dR)/U_B)
-Dx,Dy,Lx,Ly = [],[],[],[]
-X,Y,Sx,Sy=[],[],[],[] 
-S = []
- 
+for j in range(len(dR)): 
+	R = dR[j]
+	Rsx, Rsy = U_B-R ,U_B-R
+	Upper_Ang = arctan(U_B/(U_B-R))
+	Lower_Ang = arctan((U_B-R)/U_B)
 
-for k in range(len(the)):
-	A = (cos(the[k]))**(-2)
-	C = Rsx**2 + Rsy**2 - dR**2
-	if the[k] <= pi/2:
-		B = -2*(Rsx+Rsy*tan(the[k]))
-	elif pi/2 < the[k] <= pi:
-		B = -2*(-Rsx+Rsy*tan(the[k]))
-	elif pi < the[k] <= 3*pi/2:
-		B = 2*(Rsx+Rsy*tan(the[k]))
-	else:
-		B = -2*(Rsx-Rsy*tan(the[k]))
-			
-	if the[k] < Lower_Ang or the[k] > 2*pi-Lower_Ang:
-		Sx.append(U_B) 
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif Lower_Ang < the[k] < Upper_Ang:
-		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif Upper_Ang < the[k] < (Lower_Ang+pi/2):
-		Sy.append(U_B)
-		Sx.append(Sy[k]/tan(the[k]))
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif (Lower_Ang+pi/2) < the[k] < (Upper_Ang + pi/2):
-		Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif (Upper_Ang + pi/2) < the[k] < (Lower_Ang + pi):
-		Sx.append(-1*U_B)
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif (Lower_Ang + pi)< the[k] < (Upper_Ang + pi):
-		Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	elif the[k] < (2*pi-Upper_Ang):
-		Sy.append(-1*U_B)
-		Sx.append(Sy[k]/tan(the[k]))
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-	else:
-		Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
-		Sy.append(tan(the[k])*Sx[k])
-		S.append(sqrt(Sx[k]**2+Sy[k]**2))
-		
-	#S.append(sqrt(Sx[k]**2+Sy[k]**2))
-
-	Dx.append(np.array(U_B*cos(the[k])))
-	Dy.append(np.array(U_B*sin(the[k])))
-	Lx.append(np.array(L_d*cos(the[k])/2))
-	Ly.append(np.array(L_d*sin(the[k])/2))
+	for k in range(len(the)):
+		A = (cos(the[k]))**(-2)
+		C = Rsx**2 + Rsy**2 - R**2
+		if the[k] <= pi/2:
+			B = -2*(Rsx+Rsy*tan(the[k]))
+		elif pi/2 < the[k] <= pi:
+			B = -2*(-Rsx+Rsy*tan(the[k]))
+		elif pi < the[k] <= 3*pi/2:
+			B = 2*(Rsx+Rsy*tan(the[k]))
+		else:
+			B = -2*(Rsx-Rsy*tan(the[k]))
+				
+		if the[k] < Lower_Ang or the[k] > 2*pi-Lower_Ang:
+			Sx.append(U_B) 
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif Lower_Ang < the[k] < Upper_Ang:
+			Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif Upper_Ang < the[k] < (Lower_Ang+pi/2):
+			Sy.append(U_B)
+			Sx.append(Sy[k]/tan(the[k]))
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif (Lower_Ang+pi/2) < the[k] < (Upper_Ang + pi/2):
+			Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif (Upper_Ang + pi/2) < the[k] < (Lower_Ang + pi):
+			Sx.append(-1*U_B)
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif (Lower_Ang + pi)< the[k] < (Upper_Ang + pi):
+			Sx.append((-B-sqrt(B**2-4*A*C))/2/A)
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		elif the[k] < (2*pi-Upper_Ang):
+			Sy.append(-1*U_B)
+			Sx.append(Sy[k]/tan(the[k]))
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
+		else:
+			Sx.append((-B+sqrt(B**2-4*A*C))/2/A)
+			Sy.append(tan(the[k])*Sx[k])
+			S.append(sqrt(Sx[k]**2+Sy[k]**2))
 	
-for i in range(len(the)):
-	P1=np.array([-L,0,1])
-	M12=np.matrix([[cos(the[i]),-sin(the[i]),S[i]*cos(the[i])],[sin(the[i]),cos(the[i]),S[i]*sin(the[i])],[0,0,1]])
-	P2 = np.dot(M12,P1)
-	X.append(P2[0,0])
-	Y.append(P2[0,1])
-
+		Dx.append(np.array(U_B*cos(the[k])))
+		Dy.append(np.array(U_B*sin(the[k])))
+		Lx.append(np.array(L_d*cos(the[k])/2))
+		Ly.append(np.array(L_d*sin(the[k])/2))
 	
+	for i in range(len(the)):
+		P1=np.array([-L,0,1])
+		M12=np.matrix([[cos(the[i]),-sin(the[i]),S[i]*cos(the[i])],[sin(the[i]),cos(the[i]),S[i]*sin(the[i])],[0,0,1]])
+		P2 = np.dot(M12,P1)
+		X.append(P2[0,0])
+		Y.append(P2[0,1])
+        
+	P_x[j][:] = X              # Position X of the spindle center
+	P_y[j][:] = Y              # Position Y of the spindle center
+	P_sx[j][:] = Sx            # Position X of the contour
+	P_sy[j][:] = Sy            # Position Y of the contour
+	L_s[j][:] = S	           # distance from origin to contour 	
+	X,Y,Sx,Sy,S=[],[],[],[],[] # clear the buffer
 #-----------
-plt.figure(2)
-plt.plot(the,Sy)
-plt.grid()
-plt.figure(1)
-plt.axis('equal')
-plt.plot(X,Y)
-plt.plot(Sx,Sy,'g')
+# Plot the diagram
+
+for i in range(len(dR)):
+	plt.figure(1)
+	plt.axis('equal')
+	plt.plot(P_x[i][:],P_y[i][:])
+	plt.plot(P_sx[i][:],P_sy[i][:],'b')
+	plt.plot(Sx,Sy,'g')
 plt.plot(Dx,Dy,'r',Lx,Ly,'g--')
 plt.grid()
 plt.show()
