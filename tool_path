@@ -84,14 +84,16 @@ for j in range(len(dR)):
 	L_s[j][:] = S		
 	Sx,Sy,X,Y,S =[],[],[],[],[]
 #-----------
- 
+'''
+#plot the contour and the spindle trace
 for i in range(len(dR)):
 	plt.figure(1)
 	plt.axis('equal')
 	plt.plot(P_x[i][:],P_y[i][:])
 	plt.plot(P_sx[i][:],P_sy[i][:],'g')
 plt.plot(Dx,Dy,'r',Lx,Ly,'g--')
-	
+
+#only show the spindle trace	
 for i in range(len(dR)):
 	plt.figure(2)
 	plt.axis('equal')
@@ -99,3 +101,11 @@ for i in range(len(dR)):
 
 plt.grid()
 plt.show()
+'''
+filepath = 'D:\\test\\test.txt'
+with open(filepath,'w') as fid:
+    for i in range(len(P_sx[:])):
+        for k in range(len(the)):
+            fid.write('X%.4f Y%.4f C%.1F\n' % (P_x[i][k],P_y[i][k],the[k]*180/2/pi))
+			
+        
