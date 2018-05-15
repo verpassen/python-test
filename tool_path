@@ -8,8 +8,8 @@ the = np.linspace(0,2*pi,n)
 L = 112.  # tool length
 U_B = 87. # boundary distance
 L_d = 80.  # diameter of the hole
-#dR = np.linspace(20,70,5)
-dR = [20,30,40,50,60,70]
+dR = np.linspace(20,80,20)
+
 Dx,Dy,Lx,Ly,X,Y,Sx,Sy,S = [],[],[],[],[],[],[],[],[] 
 P_x,P_y,L_s = [[] for i in range(len(dR))],[[] for i in range(len(dR))], [[] for i in range(len(dR))]
 P_sx,P_sy = [[] for i in range(len(dR))],[[] for i in range(len(dR))]
@@ -77,21 +77,25 @@ for j in range(len(dR)):
 		X.append(P2[0,0])
 		Y.append(P2[0,1])
         
-	P_x[j][:] = X              # Position X of the spindle center
-	P_y[j][:] = Y              # Position Y of the spindle center
-	P_sx[j][:] = Sx            # Position X of the contour
-	P_sy[j][:] = Sy            # Position Y of the contour
-	L_s[j][:] = S	           # distance from origin to contour 	
-	X,Y,Sx,Sy,S=[],[],[],[],[] # clear the buffer
+	P_x[j][:] = X
+	P_y[j][:] = Y
+	P_sx[j][:] = Sx
+	P_sy[j][:] = Sy
+	L_s[j][:] = S		
+	Sx,Sy,X,Y,S =[],[],[],[],[]
 #-----------
-# Plot the diagram
-
+ 
 for i in range(len(dR)):
 	plt.figure(1)
 	plt.axis('equal')
 	plt.plot(P_x[i][:],P_y[i][:])
-	plt.plot(P_sx[i][:],P_sy[i][:],'b')
-	plt.plot(Sx,Sy,'g')
+	plt.plot(P_sx[i][:],P_sy[i][:],'g')
 plt.plot(Dx,Dy,'r',Lx,Ly,'g--')
+	
+for i in range(len(dR)):
+	plt.figure(2)
+	plt.axis('equal')
+	plt.plot(P_x[i][:],P_y[i][:])
+
 plt.grid()
 plt.show()
