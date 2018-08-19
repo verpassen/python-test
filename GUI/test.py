@@ -14,7 +14,7 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import matplotlib.patches as patches
-
+import tkFileDialog
 try:
     from Tkinter import *
 except ImportError:
@@ -150,6 +150,11 @@ class Polygon_Tool_Path:
         self.canvas.get_tk_widget().pack(expand=1)
         toolbar = NavigationToolbar2TkAgg(self.canvas,top)
         toolbar.update()
+        
+        self.Button4 = Button(top)
+        self.Button4.place(relx=0.5, rely=0.9, height=30, width=57)
+        self.Button4.configure(text='''save as''')
+        self.Button4.configure(command=self.file_save)
         # Entry default value        
         test_support.Lt.set(78)
         test_support.Rf.set(20)
@@ -223,7 +228,12 @@ class Polygon_Tool_Path:
     def DraftClear(self):
         self.f.clear()
         self.canvas.draw()
-        
+    def file_save(self):
+        w1 = tkFileDialog.asksaveasfile(mode='w',title='select file',defaultextension='.nc')
+        if w1 is None:
+            return
+    def gen_g_code(self):
+        fid = open('')
         
 if __name__ == '__main__':
     vp_start_gui()
