@@ -153,21 +153,23 @@ class Polygon_Tool_Path:
         
         self.Button4 = Button(top)
         self.Button4.place(relx=0.5, rely=0.9, height=30, width=57)
-        self.Button4.configure(text='''save as''')
-        self.Button4.configure(command=self.test)
+        self.Button4.configure(text='''save as''',state=DISABLED)
+        self.Button4.configure(command=self.file_save)
         # Entry default value        
         test_support.Lt.set(78)
         test_support.Rf.set(20)
         test_support.Rc.set(50)
         test_support.n.set(6)
         test_support.Ang_delta.set(1)
-        
+        #define global variable
+        self.ang = None
+        self.Pos_X,self.Pos_Y = [],[]
     def show(self):
         self.get_Val()
         self.calculation()
         self.canvas.draw()
         self.Frame1.update()
-
+        self.Button4.configure(state=NORMAL)
     def get_Val(self):
         global n,Rf,Rc,Ang_delta,Lt
         Lt = float(self.Lt.get())
@@ -177,7 +179,6 @@ class Polygon_Tool_Path:
         Ang_delta = float(self.Ang_delta.get())
    
     def calculation(self):
-        #print(n,Rf,Rc,Ang_delta,Lt)
         S = Rc/cos(pi/n) 
         r2 = Rf/Rc*S
         Upper_phi = arccos(Rc/r2)
@@ -214,9 +215,8 @@ class Polygon_Tool_Path:
         		P_x.append(tmp[0,0])
         		P_y.append(tmp[0,1])
         		D_p.append(sqrt(tmp[0,0]**2+tmp[0,1]**2))
-
         phi = np.linspace(0,2*pi,n*360)
-        self.ang = phi
+        
         for i in range(len(phi)):
         	P1 = np.array([-Lt,0,1])
         	M12 = np.matrix([[cos(phi[i]),-sin(phi[i]),D_p[i]*cos(phi[i])],[sin(phi[i]),cos(phi[i]),D_p[i]*sin(phi[i])],[0,0,1]])
@@ -225,26 +225,28 @@ class Polygon_Tool_Path:
         	S_y.append(P2[0,1])
         a.plot(P_x,P_y)	
         a.plot(S_x,S_y)	
- 
+        
+        self.ang = phi
+        self.Pos_X = S_x
+        self.Pos_Y = S_y
+    
     def DraftClear(self):
         self.f.clear()
         self.canvas.draw()
     def file_save(self):
         w1 = tkFileDialog.asksaveasfile(mode='w',title='select file',defaultextension='.nc')
-        self.gen_g_code()
-    def test(self):
-        self.gen_g_code()
-    def gen_g_code(self):
-        file_path = '/home/chang/tmp/test.nc'
-        ang = self.gen_g_code().ang
-        X = self.gen_g_code().X
-        Y = self.gen_g_code().Y
-        print ang
+        print w1
+        self.gen_g_code(w1.name)
+    
+    def gen_g_code(self,file_path):
+        ang = self.ang
+        X = self.Pos_X
+        Y = self.Pos_Y
         with open(file_path,'wr') as w:
-            for k in range(len(ang)):
-                if k == 1:
+            for k in range(len(X)):
+                if k == 0:
                     w.write('G01 ')
-                w.write('X%4.3F Y%4.3F C%4.3F' % (self.X[k],self.Y[k],ang[k]))
+                w.write('X%4.3F Y%4.3F C%4.3F\n' % (X[k],Y[k],ang[k]))
         
 if __name__ == '__main__':
     vp_start_gui()
