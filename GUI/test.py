@@ -155,6 +155,10 @@ class Polygon_Tool_Path:
         self.Button4.place(relx=0.5, rely=0.9, height=30, width=57)
         self.Button4.configure(text='''save as''',state=DISABLED)
         self.Button4.configure(command=self.file_save)
+        self.create_menu(top)
+      
+        #filemenu.add_separator()
+        
         # Entry default value        
         test_support.Lt.set(78)
         test_support.Rf.set(20)
@@ -183,7 +187,6 @@ class Polygon_Tool_Path:
         r2 = Rf/Rc*S
         Upper_phi = arccos(Rc/r2)
         Upper_the = arctan(Rf*sin(Upper_phi)/(S-r2*sin(Upper_phi)**2))
-        
         the = np.linspace(0,2*pi/n,360)
         phi = np.linspace(0,2*pi,360)
         X,Y,S_x,S_y=[],[],[],[]
@@ -225,17 +228,35 @@ class Polygon_Tool_Path:
         	S_y.append(P2[0,1])
         a.plot(P_x,P_y)	
         a.plot(S_x,S_y)	
-        
         self.ang = phi
         self.Pos_X = S_x
         self.Pos_Y = S_y
-    
+        
+    def create_menu(self,top):
+        self.M1 = Menu(top)
+        filemenu = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='File',menu=filemenu)
+        filemenu.add_command(label='New')
+        filemenu.add_command(label='Open')
+        filemenu.add_command(label='Save')
+        filemenu.add_command(label='Save as')
+        filemenu.add_command(label='Close')
+        filemenu2 = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='Tools',menu=filemenu2)
+        filemenu2.add_command(label='Generate G code')
+        filemenu2.add_command(label='Anitmation')
+        filemenu3 = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='Help',menu=filemenu3)
+        filemenu3.add_command(label='About')
+        filemenu3.add_command(label='Help')
+        top.config(menu=self.M1)
+        
     def DraftClear(self):
         self.f.clear()
         self.canvas.draw()
     def file_save(self):
         w1 = tkFileDialog.asksaveasfile(mode='w',title='select file',defaultextension='.nc')
-        print w1
+        #print w1
         self.gen_g_code(w1.name)
     
     def gen_g_code(self,file_path):
