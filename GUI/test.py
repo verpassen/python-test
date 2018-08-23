@@ -15,6 +15,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,NavigationToolba
 from matplotlib.figure import Figure
 import matplotlib.patches as patches
 import tkFileDialog
+import tkMessageBox
 try:
     from Tkinter import *
 except ImportError:
@@ -174,6 +175,9 @@ class Polygon_Tool_Path:
         self.canvas.draw()
         self.Frame1.update()
         self.Button4.configure(state=NORMAL)
+        
+        self.filemenu2.entryconfig(
+        "Generate G code",state=NORMAL)
     def get_Val(self):
         global n,Rf,Rc,Ang_delta,Lt
         Lt = float(self.Lt.get())
@@ -234,21 +238,20 @@ class Polygon_Tool_Path:
         
     def create_menu(self,top):
         self.M1 = Menu(top)
-        filemenu = Menu(self.M1,tearoff=0)
-        self.M1.add_cascade(label='File',menu=filemenu)
-        filemenu.add_command(label='New')
-        filemenu.add_command(label='Open')
-        filemenu.add_command(label='Save')
-        filemenu.add_command(label='Save as')
-        filemenu.add_command(label='Close')
-        filemenu2 = Menu(self.M1,tearoff=0)
-        self.M1.add_cascade(label='Tools',menu=filemenu2)
-        filemenu2.add_command(label='Generate G code')
-        filemenu2.add_command(label='Anitmation')
-        filemenu3 = Menu(self.M1,tearoff=0)
-        self.M1.add_cascade(label='Help',menu=filemenu3)
-        filemenu3.add_command(label='About')
-        filemenu3.add_command(label='Help')
+        self.filemenu = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='File',menu=self.filemenu)
+        self.filemenu.add_command(label='Open',command=self.open_file)
+        self.filemenu.add_command(label='Save',command=self.save_file)
+        self.filemenu.add_command(label='Save as',command=self.save_file)
+        self.filemenu.add_command(label='Close',command=quit)
+        self.filemenu2 = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='Tools',menu=self.filemenu2)
+        self.filemenu2.add_command(label='Generate G code',state=DISABLED,command=self.file_save)
+        self.filemenu2.add_command(label='Anitmation')
+        self.filemenu3 = Menu(self.M1,tearoff=0)
+        self.M1.add_cascade(label='Help',menu=self.filemenu3)
+        self.filemenu3.add_command(label='About',command=self.show_info)
+        self.filemenu3.add_command(label='Help',command=self.show_help)
         top.config(menu=self.M1)
         
     def DraftClear(self):
@@ -268,7 +271,18 @@ class Polygon_Tool_Path:
                 if k == 0:
                     w.write('G01 ')
                 w.write('X%4.3F Y%4.3F C%4.3F\n' % (X[k],Y[k],ang[k]))
-        
+    def new_file(self):
+        pass
+    def open_file(self):
+        filename = tkFileDialog.askopenfilename(initialdir="/",title='select file',defaultextension=".txt")
+        return filename
+    def save_file(self):
+        tkFileDialog.asksaveasfilename(initialdir="/",title='Select file',filetypes=(('all types','*.*'),('text files','*.txt')))
+    def show_info(self):
+        tkMessageBox.showinfo("About","This program is made by KP Chang\n 2018.08.23",icon=INFO)
+
+    def show_help(self):
+        pass
 if __name__ == '__main__':
     vp_start_gui()
 
