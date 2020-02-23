@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+#-*- coding : utf8 -*- 
+import random 
+import numpy as np 
+
+val_list = np.array(range(1,37))
+t = range(6)
+k = np.zeros((6,6))
+for x in t:
+
+    k[x][y] = 
+
+
+'''
+t = range(6)
+
+k=np.zeros((6,6))
+
+for x in t:
+    for y in t:
+        #print ('the current pos (x,y) = (%d , %d)' % (x,y)) 
+        val = random.randint(1,36)
+        k[x][y]=val
+        y +=y 
+    x +=x 
+
+print(k)
+'''
+
