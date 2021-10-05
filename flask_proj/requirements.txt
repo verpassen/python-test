@@ -1,0 +1,5 @@
+flask
+pytest
+SnowNLP
+bs4
+line-bot-sdk
