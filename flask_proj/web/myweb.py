@@ -5,7 +5,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
-# import test_fun
+import test_fun
 
 app = Flask(__name__)
 
@@ -15,7 +15,11 @@ line_bot_api = LineBotApi('2LhA8MJ4slIH6qMURWRlGGNiuDwMJr9qJ5qcEiF2M9+K8X1aS4RQZ
 
 handler = WebhookHandler('059810822c07be59f4794448fce49d1a')
 your_ID = 'U62a78d3a1ec5b920108d2e18040c64dd'
-line_bot_api.push_message(your_ID, TextSendMessage(text='the robot wakes up'))
+line_bot_api.push_message(your_ID, TextSendMessage(text='local robot wakes up'))
+
+@app.route("/")
+def index():
+    return 'hello world'
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -34,13 +38,14 @@ def callback():
         abort(400)
     return 'OK'
 
- 
 #處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
+    if message == '公司':
+        content = test_fun.aboutTungaloy()
     # line_bot_api.reply_message(event.reply_token,TextSendMessage(text='I am ready!'))
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text=message))
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=content))
 
     
     
