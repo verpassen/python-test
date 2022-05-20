@@ -3,3 +3,8 @@
 # 忽略 flask project 中的 site-packages
 flask_proj/Lib/
 flask_proj/Scripts/
+
+#忽略所有暫存檔
+*.tmp
+
+

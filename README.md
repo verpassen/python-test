@@ -7,6 +7,7 @@ some python scripts that I wrote
 
 -	Cycloid.py : generation a cycloid animation
 -	isris.py : plot a iris mechanism (not finish)
+
 -	GUI
 	*	LineEdit: A simple gui written in PyQt5 
 	*	Bingo: A bingo game GUI written in tkinter
