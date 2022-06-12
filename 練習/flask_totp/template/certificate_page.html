@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body style="background-color: #FAEBD7">
+   <h2>TOTP驗證測試頁面</h2>
+   <form method='post' action='/check'>
+      <p>Please enter the number on the authenticator</p>
+      <input type="text" name="passwd">
+      <button type='submit'>驗證</button>
+   </form>
+   <p>Current Time: <span id='CurrentTime'></span>.</p>
+   <script type="text/javascript">
+   function updateClock(){
+   var today = new Date();
+   var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+   document.getElementById('CurrentTime').innerHTML = time;
+   setTimeout(updateClock,1000);}
+   updateClock();
+</script>
+</body>
+
+</html>
+
+ 
